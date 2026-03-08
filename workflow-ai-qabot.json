@@ -1,0 +1,154 @@
+{
+  "name": "AI Q&A Bot (Webhook → Anthropic Claude → Slack + Google Sheets)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "ai-qa-bot",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "node-webhook",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300],
+      "webhookId": "ai-qa-bot"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "x-api-key", "value": "={{ $credentials.value }}" },
+            { "name": "anthropic-version", "value": "2023-06-01" },
+            { "name": "content-type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": []
+        },
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"claude-haiku-4-5-20251001\",\n  \"max_tokens\": 512,\n  \"system\": \"You are a helpful assistant. Answer clearly and concisely.\",\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": \"{{ $json.body.question }}\"\n    }\n  ]\n}",
+        "options": {}
+      },
+      "id": "node-anthropic",
+      "name": "Anthropic Claude",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [480, 300],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "YOUR_ANTHROPIC_CREDENTIAL_ID",
+          "name": "Anthropic API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_GOOGLE_SHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Sheet1",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Question": "={{ $('Webhook').item.json.body.question }}",
+            "Answer": "={{ $json.content[0].text }}",
+            "Model": "={{ $json.model }}",
+            "Timestamp": "={{ $now.toISO() }}"
+          }
+        }
+      },
+      "id": "node-gsheets",
+      "name": "Google Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [720, 200],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YOUR_GOOGLE_CREDENTIAL_ID",
+          "name": "Google Sheets OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "#automation-log",
+          "mode": "name"
+        },
+        "messageType": "text",
+        "text": "={{ 'New Claude Query\\n\\nQuestion: ' + $('Webhook').first().json.body.question + '\\nAnswer: ' + $('Anthropic Claude').first().json.content[0].text + '\\nModel: ' + $('Anthropic Claude').first().json.model + '\\nTime: ' + $now.toISO() }}",
+        "otherOptions": {}
+      },
+      "id": "node-slack",
+      "name": "Slack",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2,
+      "position": [720, 400],
+      "credentials": {
+        "slackApi": {
+          "id": "YOUR_SLACK_CREDENTIAL_ID",
+          "name": "Slack API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"question\": \"{{ $('Webhook').item.json.body.question }}\",\n  \"answer\": \"{{ $('Anthropic Claude').item.json.content[0].text }}\",\n  \"model\": \"{{ $('Anthropic Claude').item.json.model }}\",\n  \"timestamp\": \"{{ $now.toISO() }}\"\n}",
+        "options": {}
+      },
+      "id": "node-respond",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [960, 300]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [{ "node": "Anthropic Claude", "type": "main", "index": 0 }]
+      ]
+    },
+    "Anthropic Claude": {
+      "main": [
+        [
+          { "node": "Google Sheets", "type": "main", "index": 0 },
+          { "node": "Slack", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        [{ "node": "Respond to Webhook", "type": "main", "index": 0 }]
+      ]
+    },
+    "Slack": {
+      "main": [
+        [{ "node": "Respond to Webhook", "type": "main", "index": 0 }]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "tags": ["ai", "webhook", "anthropic", "claude", "tutorial"]
+}

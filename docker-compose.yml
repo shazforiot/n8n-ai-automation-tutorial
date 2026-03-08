@@ -1,0 +1,50 @@
+version: '3.8'
+
+# ─────────────────────────────────────────────────────────────
+# n8n AI Automation — Docker Compose
+# YouTube Tutorial: "n8n AI Automation for Beginners 2026"
+#
+# Usage:
+#   docker-compose up -d
+#   Open: http://localhost:5678
+#   Login: admin / admin123
+# ─────────────────────────────────────────────────────────────
+
+services:
+  n8n:
+    image: docker.n8n.io/n8nio/n8n:latest
+    container_name: n8n
+    restart: unless-stopped
+    ports:
+      - "5678:5678"       # n8n Web UI + Webhook endpoint
+    environment:
+      # Basic auth to protect your n8n instance
+      N8N_BASIC_AUTH_ACTIVE: "true"
+      N8N_BASIC_AUTH_USER: "admin"
+      N8N_BASIC_AUTH_PASSWORD: "admin123"
+
+      # Timezone for scheduled triggers
+      GENERIC_TIMEZONE: "America/New_York"
+      TZ: "America/New_York"
+
+      # Required: the public URL n8n uses to build webhook URLs
+      # Change this to your server IP/domain if deploying remotely
+      WEBHOOK_URL: "http://localhost:5678/"
+
+      # Optional: disable telemetry
+      N8N_DIAGNOSTICS_ENABLED: "false"
+      N8N_VERSION_NOTIFICATIONS_ENABLED: "false"
+
+    volumes:
+      # Persist workflows, credentials, and executions
+      - n8n_data:/home/node/.n8n
+
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:5678/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+volumes:
+  n8n_data:

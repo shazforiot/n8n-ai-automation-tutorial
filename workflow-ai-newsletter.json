@@ -1,0 +1,124 @@
+{
+  "name": "AI Daily Tech Briefing (Schedule → RSS → Anthropic Claude → Gmail)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 8 * * 1-5"
+            }
+          ]
+        }
+      },
+      "id": "node-schedule",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "url": "https://feeds.feedburner.com/TechCrunch",
+        "options": {
+          "itemsLimit": 5
+        }
+      },
+      "id": "node-rss",
+      "name": "RSS Feed Read",
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.1,
+      "position": [480, 300]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "const items = $input.all();\nconst headlines = items.map((item, i) =>\n  (i + 1) + '. ' + item.json.title\n).join('\\n');\n\n// Escape newlines and quotes so the value is safe inside a JSON string\nconst headlinesEscaped = headlines\n  .replace(/\\\\/g, '\\\\\\\\')\n  .replace(/\"/g, '\\\\\"')\n  .replace(/\\n/g, '\\\\n')\n  .replace(/\\r/g, '\\\\r');\n\nreturn [{ json: { headlines: headlines, headlinesEscaped: headlinesEscaped } }];"
+      },
+      "id": "node-code",
+      "name": "Combine Headlines",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [720, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "x-api-key", "value": "={{ $credentials.value }}" },
+            { "name": "anthropic-version", "value": "2023-06-01" },
+            { "name": "content-type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\"model\":\"claude-haiku-4-5-20251001\",\"max_tokens\":700,\"system\":\"You are a friendly tech newsletter writer. Write in a conversational, engaging tone.\",\"messages\":[{\"role\":\"user\",\"content\":\"Write a friendly 3-paragraph daily tech briefing from these headlines. Include a key insight for each.\\n\\nHeadlines:\\n1. OpenAI launches GPT-5 with real-time reasoning capabilities\\n2. Apple unveils Vision Pro 2 with 40% lighter design\\n3. Google DeepMind cracks protein folding for drug discovery\\n4. Microsoft integrates Copilot directly into Windows kernel\\n5. Meta releases open-source AI video generator\"}]}",
+        "options": {}
+      },
+      "id": "node-anthropic",
+      "name": "Anthropic Claude — Write Briefing",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [960, 300],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "YOUR_ANTHROPIC_CREDENTIAL_ID",
+          "name": "Anthropic API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "your@email.com",
+        "subject": "=Your AI Daily Tech Briefing — {{ $now.format('EEEE, MMMM d') }}",
+        "emailType": "html",
+        "message": "=<h2 style='color:#F56040;font-family:sans-serif;'>Your AI Daily Tech Briefing</h2>\n<p style='font-family:sans-serif;font-size:15px;line-height:1.7;'>{{ $json.content[0].text.replace(/\\n/g, '<br>') }}</p>\n<hr>\n<p style='font-family:sans-serif;font-size:12px;color:#888;'>Powered by n8n + Anthropic Claude &middot; {{ $now.toISO() }}</p>",
+        "options": {}
+      },
+      "id": "node-gmail",
+      "name": "Gmail",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [1200, 300],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "YOUR_GMAIL_CREDENTIAL_ID",
+          "name": "Gmail OAuth2"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [{ "node": "RSS Feed Read", "type": "main", "index": 0 }]
+      ]
+    },
+    "RSS Feed Read": {
+      "main": [
+        [{ "node": "Combine Headlines", "type": "main", "index": 0 }]
+      ]
+    },
+    "Combine Headlines": {
+      "main": [
+        [{ "node": "Anthropic Claude — Write Briefing", "type": "main", "index": 0 }]
+      ]
+    },
+    "Anthropic Claude — Write Briefing": {
+      "main": [
+        [{ "node": "Gmail", "type": "main", "index": 0 }]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "tags": ["ai", "schedule", "anthropic", "claude", "gmail", "rss", "tutorial"]
+}
