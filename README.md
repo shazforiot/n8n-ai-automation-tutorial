@@ -11,8 +11,8 @@ In this video, you'll learn:
 • Best practices for 2026
 
 <div align="center">
-  <a href="https://youtu.be/jCWPqTDgplk?si=kTNnuNYyllslMwEq">
-    <img src="https://img.youtube.com/vi/jCWPqTDgplk?si=PSps_ZLbuHd_HkAP/maxresdefault.jpg" alt="Watch the video" style="width:100%;">
+  <a href="https://youtu.be/jCWPqTDgplk">
+    <img src="https://img.youtube.com/vi/jCWPqTDgplk/maxresdefault.jpg" alt="Watch the video" style="width:100%;">
   </a>
 </div>
 
