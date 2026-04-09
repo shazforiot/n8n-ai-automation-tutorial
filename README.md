@@ -10,11 +10,12 @@ In this video, you'll learn:
 • Automating repetitive tasks
 • Best practices for 2026
 
-Check out the full video here:
 <div align="center">
-  <a href="https://youtu.be/jCWPqTDgplk">
-    <img src="https://img.youtube.com/vi/jCWPqTDgplk/maxresdefault.jpg" alt="Watch the video" style="width:100%;">
+  <h3>n8n AI Automation Tutorial 2026: Build Your First Workflow</h3>
+  <a href="https://www.youtube.com/watch?v=jCWPqTDgplk">
+    <img src="https://img.youtube.com/vi/jCWPqTDgplk/maxresdefault.jpg" alt="Watch the n8n Tutorial" style="width:100%; max-width:600px;">
   </a>
+  <p><i>Click the image to watch the automation guide on YouTube</i></p>
 </div>
 
 ---
