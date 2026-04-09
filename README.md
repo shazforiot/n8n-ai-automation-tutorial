@@ -2,6 +2,16 @@
 
 > Source code for the YouTube tutorial: **"n8n AI Automation for Beginners 2026"**
 
+Master n8n AI automation in this complete 2026 tutorial! Learn to build powerful AI workflows, automate tasks, and streamline your workflow processes from scratch.
+In this video, you'll learn:
+• Setting up n8n AI automation
+• Building custom workflows
+• Integrating AI services
+• Automating repetitive tasks
+• Best practices for 2026
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/jCWPqTDgplk?si=y3xbU9IEphfaMgI7" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
 ---
 
 ## What This Builds
