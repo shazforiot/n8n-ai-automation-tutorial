@@ -12,7 +12,7 @@ In this video, you'll learn:
 
 <div align="center">
   <a href="https://youtu.be/jCWPqTDgplk?si=kTNnuNYyllslMwEq">
-    <img src="https://img.youtube.com/vi/YOUTUBE_VIDEO_ID/maxresdefault.jpg" alt="Watch the video" style="width:100%;">
+    <img src="https://img.youtube.com/vi/kTNnuNYyllslMwEq/maxresdefault.jpg" alt="Watch the video" style="width:100%;">
   </a>
 </div>
 
