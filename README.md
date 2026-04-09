@@ -10,6 +10,7 @@ In this video, you'll learn:
 • Automating repetitive tasks
 • Best practices for 2026
 
+Check out the full video here:
 <div align="center">
   <a href="https://youtu.be/jCWPqTDgplk">
     <img src="https://img.youtube.com/vi/jCWPqTDgplk/maxresdefault.jpg" alt="Watch the video" style="width:100%;">
