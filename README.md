@@ -10,7 +10,7 @@ In this video, you'll learn:
 • Automating repetitive tasks
 • Best practices for 2026
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/jCWPqTDgplk?si=y3xbU9IEphfaMgI7" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+[<iframe width="560" height="315" src="https://www.youtube.com/embed/jCWPqTDgplk?si=y3xbU9IEphfaMgI7" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>](https://youtu.be/jCWPqTDgplk?si=EFbxtMJkA_HkA_Pv)
 
 ---
 
